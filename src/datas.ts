@@ -1,35 +1,6 @@
-import { Author, Book } from './types'
+import { Product, Review, ReviewHate, ReviewKeyword, ReviewLike } from './types'
 
-export type Review = {
-  id: number
-  productId: number
-  content: string
-  keywordIds: number[] | null
-}
-
-export type ReviewKeyword = {
-  id: number
-  title: string
-}
-
-export type Product = {
-  id: number
-  title: string
-}
-
-export type ReviewLike = {
-  id: number
-  reviewId: number
-  memberId: number
-}
-
-export type ReviewHate = {
-  id: number
-  reviewId: number
-  memberId: number
-}
-
-export const products: Product[] = [
+export let products: Product[] = [
   {
     id: 1,
     title: 'test product1',
@@ -40,7 +11,7 @@ export const products: Product[] = [
   },
 ]
 
-export const reviewKeywords: ReviewKeyword[] = [
+export let reviewKeywords: ReviewKeyword[] = [
   {
     id: 1,
     title: 'test review keyword1',
@@ -51,7 +22,7 @@ export const reviewKeywords: ReviewKeyword[] = [
   },
 ]
 
-export const reviewLikes: ReviewLike[] = [
+export let reviewLikes: ReviewLike[] = [
   {
     id: 1,
     memberId: 1,
@@ -69,7 +40,7 @@ export const reviewLikes: ReviewLike[] = [
   },
 ]
 
-export const reviewHates: ReviewHate[] = [
+export let reviewHates: ReviewHate[] = [
   {
     id: 1,
     memberId: 1,
@@ -87,7 +58,7 @@ export const reviewHates: ReviewHate[] = [
   },
 ]
 
-export const reviews: Review[] = [
+export let reviews: Review[] = [
   {
     content: 'test review content1',
     id: 1,
