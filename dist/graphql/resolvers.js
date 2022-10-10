@@ -18,6 +18,38 @@ exports.default = {
     Query: {
         reviews: () => datas_1.reviews,
     },
+    Mutation: {
+        // createReview: (parent, args, context, info): ReviewCreatePayload => {
+        createReview: (_, args) => {
+            const { input } = args;
+            console.log(input);
+            const newReview = {
+                id: datas_1.reviews.length + 1,
+                content: input.content,
+                keywordIds: input.keywordIds.map((keywordId) => Number(keywordId)),
+                productId: Number(input.productId),
+            };
+            datas_1.reviews.push(newReview);
+            console.log(datas_1.reviews);
+            return {
+                createdReview: newReview,
+            };
+        },
+        deleteReview: (_, args) => {
+            const { reviewId } = args;
+            const foundReviewIndex = datas_1.reviews.findIndex((review) => review.id === Number(reviewId));
+            if (foundReviewIndex > -1) {
+                datas_1.reviews.splice(foundReviewIndex, 1);
+            }
+            return {
+                deletedReviewId: reviewId,
+            };
+        },
+        createReviewLike: () => { },
+        deleteReviewLike: () => { },
+        createReviewHate: () => { },
+        deleteReviewHate: () => { },
+    },
     Review: {
         product: (review) => {
             return datas_1.products.find((product) => product.id === review.productId);
@@ -30,10 +62,12 @@ exports.default = {
             return null;
         },
         likeCount: (review) => {
-            return datas_1.reviewLikes.filter((reviewLike) => reviewLike.reviewId === review.id);
+            return datas_1.reviewLikes.filter((reviewLike) => reviewLike.reviewId === review.id).length;
         },
         hateCount: (review) => {
-            return datas_1.reviewHates.filter((reviewLike) => reviewLike.reviewId === review.id);
+            console.log(`hateCount: ${review}`);
+            console.log(review, review.id, typeof review.id);
+            return datas_1.reviewHates.filter((reviewHate) => reviewHate.reviewId === review.id).length;
         },
     },
 };
