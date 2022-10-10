@@ -1,13 +1,71 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.books = exports.authors = void 0;
-exports.authors = [
-    { id: 1, name: 'Simon Sinek', email: 'simon@example.com' },
-    { id: 2, name: 'Malcolm Gladwell', email: 'malcolm@example.com' },
+exports.reviews = exports.reviewHates = exports.reviewLikes = exports.reviewKeywords = exports.products = void 0;
+exports.products = [
+    {
+        id: 1,
+        title: 'test product1',
+    },
+    {
+        id: 2,
+        title: 'test product2',
+    },
 ];
-exports.books = [
-    { id: 1, title: 'Start with Why', authorId: 1 },
-    { id: 2, title: 'The Tipping Point', authorId: 2 },
-    { id: 3, title: 'Leaders Eat Last', authorId: 1 },
-    { id: 4, title: 'Outliers', authorId: 2 },
+exports.reviewKeywords = [
+    {
+        id: 1,
+        title: 'test review keyword1',
+    },
+    {
+        id: 2,
+        title: 'test review keyword2',
+    },
+];
+exports.reviewLikes = [
+    {
+        id: 1,
+        memberId: 1,
+        reviewId: 1,
+    },
+    {
+        id: 2,
+        memberId: 2,
+        reviewId: 1,
+    },
+    {
+        id: 3,
+        memberId: 3,
+        reviewId: 1,
+    },
+];
+exports.reviewHates = [
+    {
+        id: 1,
+        memberId: 1,
+        reviewId: 1,
+    },
+    {
+        id: 2,
+        memberId: 2,
+        reviewId: 1,
+    },
+    {
+        id: 3,
+        memberId: 3,
+        reviewId: 1,
+    },
+];
+exports.reviews = [
+    {
+        content: 'test review content1',
+        id: 1,
+        keywordIds: [1],
+        productId: 1,
+    },
+    {
+        content: 'test review content2',
+        id: 2,
+        keywordIds: null,
+        productId: 1,
+    },
 ];
