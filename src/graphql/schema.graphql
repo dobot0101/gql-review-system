@@ -1,0 +1,105 @@
+type Query {
+  reviews: [Review!]
+}
+
+type Mutation {
+  """
+  리뷰 생성
+  """
+  createReview(input: ReviewCreateInput!): ReviewCreatePayload!
+  """
+  리뷰 삭제
+  """
+  deleteReview(reviewId: Int!): ReviewDeletePayload!
+  """
+  리뷰 좋아요 생성
+  """
+  createReviewLike(input: ReviewLikeCreateInput!): ReviewLikeCreatePayload!
+  """
+  리뷰 좋아요 삭제
+  """
+  deleteReviewLike(reviewLikeId: Int!): ReviewLikeDeletePayload!
+  """
+  리뷰 싫어요 생성
+  """
+  createReviewHate(input: ReviewHateCreateInput!): ReveiwHateCreatePayload!
+  """
+  리뷰 싫어요 삭제
+  """
+  deleteReviewHate(reviewHateId: Int!): ReviewHateDeletePayload!
+}
+
+type ReviewLikeDeletePayload {
+  deletedReviewLikeId: Int!
+}
+
+type ReviewHateDeletePayload {
+  deletedReviewLikeId: Int!
+}
+
+input ReviewHateCreateInput {
+  reviewId: Int!
+  memberId: Int!
+}
+type ReveiwHateCreatePayload {
+  createdReviewHate: ReviewHate!
+}
+
+input ReviewLikeCreateInput {
+  reviewId: Int!
+  memberId: Int!
+}
+type ReviewLikeCreatePayload {
+  createdReviewLike: ReviewLike!
+}
+
+input ReviewCreateInput {
+  productId: Int!
+  content: String!
+  keywordIds: [Int!]
+}
+
+type ReviewCreatePayload {
+  createdReview: Review!
+}
+
+type ReviewDeletePayload {
+  deletedReviewId: Int!
+}
+
+type Product {
+  id: Int!
+  title: String
+}
+
+type ReviewKeyword {
+  id: Int!
+  title: String!
+}
+
+type Review {
+  id: Int!
+  product: Product!
+  content: String!
+  keywords: [ReviewKeyword!]
+  likeCount: Int!
+  hateCount: Int!
+}
+
+type ReviewLike {
+  id: Int!
+  review: Review!
+  # member: Member!
+}
+
+type ReviewHate {
+  id: Int!
+  review: Review!
+  # member: Member!
+}
+
+type Member {
+  id: Int!
+  name: String!
+  email: String!
+}

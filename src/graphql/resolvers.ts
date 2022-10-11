@@ -7,38 +7,49 @@ import {
   reviews,
 } from '../datas'
 import { Review, ReviewLike } from '../types'
+import { Resolvers } from '../__generated__/resolvers-types'
 
-type ReviewCreateInput = {
-  productId: number
-  content: string
-  keywordIds: number[]
-}
-type ReviewCreatePayload = {
-  createdReview: Review
-}
+// type ReviewCreateInput = {
+//   productId: number
+//   content: string
+//   keywordIds: number[]
+// }
+// type ReviewCreatePayload = {
+//   createdReview: Review
+// }
 
-export default {
+export const resolvers: Resolvers = {
+  Member: {
+    email,id,name,
+  },Product:{
+    id,title,
+  },
   Query: {
-    reviews: () => reviews,
+    reviews: () => reviews ? reviews || []
   },
   Mutation: {
     // createReview: (parent, args, context, info): ReviewCreatePayload => {
     createReview: (
-      _: any,
-      args: { input: ReviewCreateInput }
-    ): ReviewCreatePayload => {
+      _,
+      args,
+    ) => {
       const { input } = args
       console.log(input)
-      const newReview = {
+      const newReview:Review = {
         id: reviews.length + 1,
         content: input.content,
-        keywordIds: input.keywordIds.map((keywordId) => Number(keywordId)),
+        keywordIds: input.keywordIds ? input.keywordIds.map((keywordId) => Number(keywordId)) : null,
         productId: Number(input.productId),
       }
       reviews.push(newReview)
-      console.log(reviews)
       return {
-        createdReview: newReview,
+        createdReview: {
+          ...newReview,
+          hateCount: 0,
+          likeCount:0,
+          product:products.find(product=>product.id === newReview.productId),
+          keywords: newReview.keywordIds ? newReview.keywordIds.map(keywordId => reviewKeywords.find(keyword => keyword.id === keywordId)) : null
+        },
       }
     },
     deleteReview: (_: any, args: any) => {
