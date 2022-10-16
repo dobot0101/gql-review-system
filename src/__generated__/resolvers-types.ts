@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { Member, Product, Review, ReviewLike, ReviewHate } from 'src/entity';
 import { MyContext } from '../index';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -18,24 +19,24 @@ export type Scalars = {
 export type Member = {
   __typename?: 'Member';
   email: Scalars['String'];
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   name: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   /** 리뷰 생성 */
-  createReview: ReviewCreatePayload;
+  createReview: Review;
   /** 리뷰 싫어요 생성 */
-  createReviewHate: ReveiwHateCreatePayload;
+  createReviewHate: Review;
   /** 리뷰 좋아요 생성 */
-  createReviewLike: ReviewLikeCreatePayload;
+  createReviewLike: Review;
   /** 리뷰 삭제 */
-  deleteReview: ReviewDeletePayload;
+  deleteReview: Scalars['ID'];
   /** 리뷰 싫어요 삭제 */
-  deleteReviewHate: ReviewHateDeletePayload;
+  deleteReviewHate: Scalars['ID'];
   /** 리뷰 좋아요 삭제 */
-  deleteReviewLike: ReviewLikeDeletePayload;
+  deleteReviewLike: Scalars['ID'];
 };
 
 
@@ -55,22 +56,22 @@ export type MutationCreateReviewLikeArgs = {
 
 
 export type MutationDeleteReviewArgs = {
-  reviewId: Scalars['Int'];
+  reviewId: Scalars['ID'];
 };
 
 
 export type MutationDeleteReviewHateArgs = {
-  reviewHateId: Scalars['Int'];
+  reviewHateId: Scalars['ID'];
 };
 
 
 export type MutationDeleteReviewLikeArgs = {
-  reviewLikeId: Scalars['Int'];
+  reviewLikeId: Scalars['ID'];
 };
 
 export type Product = {
   __typename?: 'Product';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
 };
 
@@ -79,16 +80,11 @@ export type Query = {
   reviews?: Maybe<Array<Review>>;
 };
 
-export type ReveiwHateCreatePayload = {
-  __typename?: 'ReveiwHateCreatePayload';
-  createdReviewHate: ReviewHate;
-};
-
 export type Review = {
   __typename?: 'Review';
   content: Scalars['String'];
   hateCount: Scalars['Int'];
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   keywords?: Maybe<Array<ReviewKeyword>>;
   likeCount: Scalars['Int'];
   product: Product;
@@ -96,61 +92,36 @@ export type Review = {
 
 export type ReviewCreateInput = {
   content: Scalars['String'];
-  keywordIds?: InputMaybe<Array<Scalars['Int']>>;
-  productId: Scalars['Int'];
-};
-
-export type ReviewCreatePayload = {
-  __typename?: 'ReviewCreatePayload';
-  createdReview: Review;
-};
-
-export type ReviewDeletePayload = {
-  __typename?: 'ReviewDeletePayload';
-  deletedReviewId: Scalars['Int'];
+  keywordIds?: InputMaybe<Array<Scalars['ID']>>;
+  productId: Scalars['ID'];
 };
 
 export type ReviewHate = {
   __typename?: 'ReviewHate';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   review: Review;
 };
 
 export type ReviewHateCreateInput = {
-  memberId: Scalars['Int'];
-  reviewId: Scalars['Int'];
-};
-
-export type ReviewHateDeletePayload = {
-  __typename?: 'ReviewHateDeletePayload';
-  deletedReviewLikeId: Scalars['Int'];
+  memberId: Scalars['ID'];
+  reviewId: Scalars['ID'];
 };
 
 export type ReviewKeyword = {
   __typename?: 'ReviewKeyword';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   title: Scalars['String'];
 };
 
 export type ReviewLike = {
   __typename?: 'ReviewLike';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   review: Review;
 };
 
 export type ReviewLikeCreateInput = {
-  memberId: Scalars['Int'];
-  reviewId: Scalars['Int'];
-};
-
-export type ReviewLikeCreatePayload = {
-  __typename?: 'ReviewLikeCreatePayload';
-  createdReviewLike: ReviewLike;
-};
-
-export type ReviewLikeDeletePayload = {
-  __typename?: 'ReviewLikeDeletePayload';
-  deletedReviewLikeId: Scalars['Int'];
+  memberId: Scalars['ID'];
+  reviewId: Scalars['ID'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -224,69 +195,59 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Member: ResolverTypeWrapper<Member>;
   Mutation: ResolverTypeWrapper<{}>;
   Product: ResolverTypeWrapper<Product>;
   Query: ResolverTypeWrapper<{}>;
-  ReveiwHateCreatePayload: ResolverTypeWrapper<ReveiwHateCreatePayload>;
   Review: ResolverTypeWrapper<Review>;
   ReviewCreateInput: ReviewCreateInput;
-  ReviewCreatePayload: ResolverTypeWrapper<ReviewCreatePayload>;
-  ReviewDeletePayload: ResolverTypeWrapper<ReviewDeletePayload>;
   ReviewHate: ResolverTypeWrapper<ReviewHate>;
   ReviewHateCreateInput: ReviewHateCreateInput;
-  ReviewHateDeletePayload: ResolverTypeWrapper<ReviewHateDeletePayload>;
   ReviewKeyword: ResolverTypeWrapper<ReviewKeyword>;
   ReviewLike: ResolverTypeWrapper<ReviewLike>;
   ReviewLikeCreateInput: ReviewLikeCreateInput;
-  ReviewLikeCreatePayload: ResolverTypeWrapper<ReviewLikeCreatePayload>;
-  ReviewLikeDeletePayload: ResolverTypeWrapper<ReviewLikeDeletePayload>;
   String: ResolverTypeWrapper<Scalars['String']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
+  ID: Scalars['ID'];
   Int: Scalars['Int'];
   Member: Member;
   Mutation: {};
   Product: Product;
   Query: {};
-  ReveiwHateCreatePayload: ReveiwHateCreatePayload;
   Review: Review;
   ReviewCreateInput: ReviewCreateInput;
-  ReviewCreatePayload: ReviewCreatePayload;
-  ReviewDeletePayload: ReviewDeletePayload;
   ReviewHate: ReviewHate;
   ReviewHateCreateInput: ReviewHateCreateInput;
-  ReviewHateDeletePayload: ReviewHateDeletePayload;
   ReviewKeyword: ReviewKeyword;
   ReviewLike: ReviewLike;
   ReviewLikeCreateInput: ReviewLikeCreateInput;
-  ReviewLikeCreatePayload: ReviewLikeCreatePayload;
-  ReviewLikeDeletePayload: ReviewLikeDeletePayload;
   String: Scalars['String'];
 }>;
 
 export type MemberResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Member'] = ResolversParentTypes['Member']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createReview?: Resolver<ResolversTypes['ReviewCreatePayload'], ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'input'>>;
-  createReviewHate?: Resolver<ResolversTypes['ReveiwHateCreatePayload'], ParentType, ContextType, RequireFields<MutationCreateReviewHateArgs, 'input'>>;
-  createReviewLike?: Resolver<ResolversTypes['ReviewLikeCreatePayload'], ParentType, ContextType, RequireFields<MutationCreateReviewLikeArgs, 'input'>>;
-  deleteReview?: Resolver<ResolversTypes['ReviewDeletePayload'], ParentType, ContextType, RequireFields<MutationDeleteReviewArgs, 'reviewId'>>;
-  deleteReviewHate?: Resolver<ResolversTypes['ReviewHateDeletePayload'], ParentType, ContextType, RequireFields<MutationDeleteReviewHateArgs, 'reviewHateId'>>;
-  deleteReviewLike?: Resolver<ResolversTypes['ReviewLikeDeletePayload'], ParentType, ContextType, RequireFields<MutationDeleteReviewLikeArgs, 'reviewLikeId'>>;
+  createReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'input'>>;
+  createReviewHate?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationCreateReviewHateArgs, 'input'>>;
+  createReviewLike?: Resolver<ResolversTypes['Review'], ParentType, ContextType, RequireFields<MutationCreateReviewLikeArgs, 'input'>>;
+  deleteReview?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteReviewArgs, 'reviewId'>>;
+  deleteReviewHate?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteReviewHateArgs, 'reviewHateId'>>;
+  deleteReviewLike?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteReviewLikeArgs, 'reviewLikeId'>>;
 }>;
 
 export type ProductResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -295,61 +256,31 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
   reviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
 }>;
 
-export type ReveiwHateCreatePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReveiwHateCreatePayload'] = ResolversParentTypes['ReveiwHateCreatePayload']> = ResolversObject<{
-  createdReviewHate?: Resolver<ResolversTypes['ReviewHate'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type ReviewResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = ResolversObject<{
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hateCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   keywords?: Resolver<Maybe<Array<ResolversTypes['ReviewKeyword']>>, ParentType, ContextType>;
   likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ReviewCreatePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewCreatePayload'] = ResolversParentTypes['ReviewCreatePayload']> = ResolversObject<{
-  createdReview?: Resolver<ResolversTypes['Review'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ReviewDeletePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewDeletePayload'] = ResolversParentTypes['ReviewDeletePayload']> = ResolversObject<{
-  deletedReviewId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type ReviewHateResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewHate'] = ResolversParentTypes['ReviewHate']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   review?: Resolver<ResolversTypes['Review'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ReviewHateDeletePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewHateDeletePayload'] = ResolversParentTypes['ReviewHateDeletePayload']> = ResolversObject<{
-  deletedReviewLikeId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type ReviewKeywordResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewKeyword'] = ResolversParentTypes['ReviewKeyword']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ReviewLikeResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewLike'] = ResolversParentTypes['ReviewLike']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   review?: Resolver<ResolversTypes['Review'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ReviewLikeCreatePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewLikeCreatePayload'] = ResolversParentTypes['ReviewLikeCreatePayload']> = ResolversObject<{
-  createdReviewLike?: Resolver<ResolversTypes['ReviewLike'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ReviewLikeDeletePayloadResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['ReviewLikeDeletePayload'] = ResolversParentTypes['ReviewLikeDeletePayload']> = ResolversObject<{
-  deletedReviewLikeId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -358,15 +289,9 @@ export type Resolvers<ContextType = MyContext> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  ReveiwHateCreatePayload?: ReveiwHateCreatePayloadResolvers<ContextType>;
   Review?: ReviewResolvers<ContextType>;
-  ReviewCreatePayload?: ReviewCreatePayloadResolvers<ContextType>;
-  ReviewDeletePayload?: ReviewDeletePayloadResolvers<ContextType>;
   ReviewHate?: ReviewHateResolvers<ContextType>;
-  ReviewHateDeletePayload?: ReviewHateDeletePayloadResolvers<ContextType>;
   ReviewKeyword?: ReviewKeywordResolvers<ContextType>;
   ReviewLike?: ReviewLikeResolvers<ContextType>;
-  ReviewLikeCreatePayload?: ReviewLikeCreatePayloadResolvers<ContextType>;
-  ReviewLikeDeletePayload?: ReviewLikeDeletePayloadResolvers<ContextType>;
 }>;
 

@@ -11,3 +11,9 @@ generates:
       useIndexSignature: true
       # More on this below!
       contextType: "../index#MyContext"
+      mappers:
+        Member: 'src/entity#Member'
+        Product: 'src/entity#Product'
+        Review: 'src/entity#Review'
+        ReviewLike: 'src/entity#ReviewLike'
+        ReviewHate: 'src/entity#ReviewHate'

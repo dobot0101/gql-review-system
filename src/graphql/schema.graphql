@@ -6,79 +6,57 @@ type Mutation {
   """
   리뷰 생성
   """
-  createReview(input: ReviewCreateInput!): ReviewCreatePayload!
+  createReview(input: ReviewCreateInput!): Review!
   """
   리뷰 삭제
   """
-  deleteReview(reviewId: Int!): ReviewDeletePayload!
+  deleteReview(reviewId: ID!): ID!
   """
   리뷰 좋아요 생성
   """
-  createReviewLike(input: ReviewLikeCreateInput!): ReviewLikeCreatePayload!
+  createReviewLike(input: ReviewLikeCreateInput!): Review!
   """
   리뷰 좋아요 삭제
   """
-  deleteReviewLike(reviewLikeId: Int!): ReviewLikeDeletePayload!
+  deleteReviewLike(reviewLikeId: ID!): ID!
   """
   리뷰 싫어요 생성
   """
-  createReviewHate(input: ReviewHateCreateInput!): ReveiwHateCreatePayload!
+  createReviewHate(input: ReviewHateCreateInput!): Review!
   """
   리뷰 싫어요 삭제
   """
-  deleteReviewHate(reviewHateId: Int!): ReviewHateDeletePayload!
-}
-
-type ReviewLikeDeletePayload {
-  deletedReviewLikeId: Int!
-}
-
-type ReviewHateDeletePayload {
-  deletedReviewLikeId: Int!
+  deleteReviewHate(reviewHateId: ID!): ID!
 }
 
 input ReviewHateCreateInput {
-  reviewId: Int!
-  memberId: Int!
-}
-type ReveiwHateCreatePayload {
-  createdReviewHate: ReviewHate!
+  reviewId: ID!
+  memberId: ID!
 }
 
 input ReviewLikeCreateInput {
-  reviewId: Int!
-  memberId: Int!
-}
-type ReviewLikeCreatePayload {
-  createdReviewLike: ReviewLike!
+  reviewId: ID!
+  memberId: ID!
 }
 
 input ReviewCreateInput {
-  productId: Int!
+  productId: ID!
   content: String!
-  keywordIds: [Int!]
-}
-
-type ReviewCreatePayload {
-  createdReview: Review!
-}
-
-type ReviewDeletePayload {
-  deletedReviewId: Int!
+  keywordIds: [ID!]
 }
 
 type Product {
-  id: Int!
+  id: ID!
   title: String
 }
 
 type ReviewKeyword {
-  id: Int!
+  id: ID!
   title: String!
 }
 
 type Review {
-  id: Int!
+  id: ID!
   product: Product!
   content: String!
   keywords: [ReviewKeyword!]
@@ -87,19 +65,19 @@ type Review {
 }
 
 type ReviewLike {
-  id: Int!
+  id: ID!
   review: Review!
   # member: Member!
 }
 
 type ReviewHate {
-  id: Int!
+  id: ID!
   review: Review!
   # member: Member!
 }
 
 type Member {
-  id: Int!
+  id: ID!
   name: String!
   email: String!
 }
