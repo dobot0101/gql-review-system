@@ -20,9 +20,13 @@ export class Review {
 
   @ManyToOne(type => Member, member => member.reviews)
   member!: Member
+  @Column('uuid')
+  memberId!: string
 
   @ManyToOne(type => Product, product => product.reviews)
   product!: Product
+  @Column('uuid')
+  productId!: string
 
   @OneToMany(
     type => ReviewReviewKeyword,
@@ -30,9 +34,13 @@ export class Review {
   )
   reviewReviewKeywords!: ReviewReviewKeyword[]
 
-  @OneToMany(type => ReviewHate, reviewHate => reviewHate.review)
+  @OneToMany(type => ReviewHate, reviewHate => reviewHate.review, {
+    nullable: true,
+  })
   hates!: ReviewHate[]
 
-  @OneToMany(type => ReviewLike, reviewLike => reviewLike.review)
+  @OneToMany(type => ReviewLike, reviewLike => reviewLike.review, {
+    nullable: true,
+  })
   likes!: ReviewLike[]
 }

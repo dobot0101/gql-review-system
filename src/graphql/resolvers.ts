@@ -1,13 +1,8 @@
-import DataLoader from 'dataloader'
-import {
-  products,
-  reviewHates,
-  reviewKeywords,
-  reviewLikes,
-  reviews,
-} from '../datas'
+import { Product } from '../entity/Product'
 import { Review } from '../entity/Review'
+import { ReviewHate } from '../entity/ReviewHate'
 import { ReviewKeyword } from '../entity/ReviewKeyword'
+import { ReviewLike } from '../entity/ReviewLike'
 import { ReviewReviewKeyword } from '../entity/ReviewReviewKeyword'
 import { Resolvers } from '../__generated__/resolvers-types'
 
@@ -22,6 +17,8 @@ export const resolvers: Resolvers = {
       const { input } = args
       const review = new Review()
       review.content = input.content
+      review.member = ctx.testDatas.member
+      review.product = ctx.testDatas.product
 
       if (input.keywordIds) {
         review.reviewReviewKeywords = await Promise.all(
@@ -39,8 +36,6 @@ export const resolvers: Resolvers = {
         )
       }
 
-      review.member = ctx.testDatas.member
-
       const savedReview = await ctx.connection
         .getRepository(Review)
         .save(review)
@@ -54,93 +49,81 @@ export const resolvers: Resolvers = {
       await ctx.connection.getRepository(Review).delete(reviewId)
       return reviewId
     },
-    createReviewLike: (_: any, args: any) => {
-      const { input } = args
-      const newReviewLike = {
-        id: reviewLikes.length + 1,
-        memberId: Number(input.memberId),
-        reviewId: Number(input.reviewId),
-      }
-      reviewLikes.push(newReviewLike)
+    createReviewLike: async (parent, args, ctx, info) => {
+      const { memberId, reviewId } = args.input
+      const reviewLike = new ReviewLike()
+      reviewLike.id = ctx.createUUID()
+      reviewLike.memberId = memberId
+      reviewLike.reviewId = reviewId
 
-      return {
-        createdReviewLike: newReviewLike,
-      }
+      await ctx.connection.getRepository(ReviewLike).save(reviewLike)
+      return reviewLike.id
     },
-    deleteReviewLike: (_: any, args: any) => {
+    deleteReviewLike: async (parent, args, ctx, info) => {
       const { reviewLikeId } = args
-      const foundReviewLikeIndex = reviewLikes.findIndex(
-        reviewLike => reviewLike.id === Number(reviewLikeId)
-      )
-
-      reviewLikes.splice(foundReviewLikeIndex, 1)
-
-      return { deletedReviewLikeId: reviewLikeId }
+      await ctx.connection.getRepository(ReviewLike).delete(reviewLikeId)
+      return reviewLikeId
     },
-    createReviewHate: (_: any, args: any) => {
-      const { input } = args
-      const newReviewHate = {
-        id: reviewHates.length + 1,
-        memberId: Number(input.memberId),
-        reviewId: Number(input.reviewId),
-      }
-      reviewHates.push(newReviewHate)
+    createReviewHate: async (parent, args, ctx, info) => {
+      const { memberId, reviewId } = args.input
+      const reviewHate = new ReviewHate()
+      reviewHate.id = ctx.createUUID()
+      reviewHate.memberId = memberId
+      reviewHate.reviewId = reviewId
+      const savedReviewHate = await ctx.connection
+        .getRepository(ReviewHate)
+        .save(reviewHate)
 
-      return {
-        createdReviewHate: newReviewHate,
-      }
+      return savedReviewHate.id
     },
-    deleteReviewHate: (_: any, args: any) => {
+    deleteReviewHate: async (parent, args, ctx, info) => {
       const { reviewHateId } = args
-      const foundReviewHateIndex = reviewHates.findIndex(
-        reviewHate => reviewHate.id === Number(reviewHateId)
-      )
-
-      reviewHates.splice(foundReviewHateIndex, 1)
-
-      return { deletedReviewHateId: reviewHateId }
+      await ctx.connection.getRepository(ReviewHate).delete(reviewHateId)
+      return reviewHateId
     },
   },
   Review: {
-    product: (review: Review) => {
-      return products.find(product => product.id === review.productId)
+    product: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(Product).findOne(parent.id)
     },
-    keywords: (review: Review) => {
-      if (review.keywordIds) {
-        return review.keywordIds.map(reviewKeywordId =>
-          reviewKeywordLoader.load(reviewKeywordId)
-        )
-        // return review.keywordIds.map(reviewKeywordId => reviewKeywords.find(keyword => keyword.id === reviewKeywordId))
-      }
-      return null
+    keywords: async (parent, args, ctx, info) => {
+      const reviewReviewKeywords = await ctx.connection
+        .getRepository(ReviewReviewKeyword)
+        .find({
+          where: { reviewId: parent.id },
+        })
+      const reviewKeywords = reviewReviewKeywords.map(
+        reviewReviewKeyword => reviewReviewKeyword.reviewKeyword
+      )
+      return reviewKeywords
     },
-    likeCount: (review: Review) => {
-      return reviewLikes.filter(reviewLike => reviewLike.reviewId === review.id)
-        .length
+    likeCount: async (parent, args, ctx, info) => {
+      const agg = await ctx.connection
+        .createQueryBuilder(ReviewLike, ' rl')
+        .select(`rl.review_id, count(*) as review_like_count`)
+        .groupBy(`rl.review_id`)
+        .where(`rl.review_id = :reviewId`, { reviewId: parent.id })
+        .getRawOne()
+      return agg.review_like_count
     },
-    hateCount: (review: Review) => {
-      return reviewHates.filter(reviewHate => reviewHate.reviewId === review.id)
-        .length
+    hateCount: async (parent, args, ctx, info) => {
+      const agg = await ctx.connection
+        .createQueryBuilder(ReviewHate, ' rl')
+        .select(`rl.review_id, count(*) as review_hate_count`)
+        .groupBy(`rl.review_id`)
+        .where(`rl.review_id = :reviewId`, { reviewId: parent.id })
+        .getRawOne()
+      return agg.review_hate_count
     },
   },
   ReviewHate: {
     review: (parent: ReviewLike) => {
-      return reviews.find(review => review.id === parent.reviewId)
+      throw new Error('unimplemented')
     },
   },
   ReviewLike: {
     review: (parent: ReviewLike) => {
-      return reviews.find(review => review.id === parent.reviewId)
+      throw new Error('unimplemented')
     },
-    // member: (parent: ReviewLike) => {
-    //   throw new Error('unimplemented')
-    // },
   },
 }
-
-const reviewKeywordLoader = new DataLoader(async keys => {
-  const result = keys.map(reviewKeywordId =>
-    reviewKeywords.find(keyword => keyword.id === reviewKeywordId)
-  )
-  return result
-})

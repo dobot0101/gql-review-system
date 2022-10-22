@@ -16,6 +16,7 @@ import { readFileSync } from 'fs'
 import { DataSource } from 'typeorm'
 import { randomUUID, RandomUUIDOptions } from 'crypto'
 import { Member } from './entity/Member'
+import { Product } from './entity/Product'
 
 AppDataSource.initialize()
   .then(() => {
@@ -47,9 +48,16 @@ async function startApolloServer() {
   const member = new Member()
   member.email = 'test@test.com'
   member.id = randomUUID()
-  member.name = 'test'
-  const savedMember = await typeormConnection.getRepository(Member).save(member)
-  console.log(savedMember)
+  member.name = 'test member'
+
+  const product = new Product()
+  product.id = randomUUID()
+  product.title = 'test product'
+
+  await Promise.all([
+    typeormConnection.getRepository(Member).save(member),
+    typeormConnection.getRepository(Product).save(product),
+  ])
 
   app.use('/', cors<cors.CorsRequest>(), bodyParser.json())
   app.use(
@@ -59,7 +67,7 @@ async function startApolloServer() {
         // token: req.headers.token,
         createUUID: randomUUID,
         connection: typeormConnection,
-        testDatas: { member: savedMember },
+        testDatas: { member, product },
       }),
     })
   )
