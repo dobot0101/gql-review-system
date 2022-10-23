@@ -17,13 +17,7 @@ import { DataSource } from 'typeorm'
 import { randomUUID, RandomUUIDOptions } from 'crypto'
 import { Member } from './entity/Member'
 import { Product } from './entity/Product'
-
-AppDataSource.initialize()
-  .then(() => {
-    console.log('db is initialized')
-    // startApolloServer()
-  })
-  .catch(error => console.log(error))
+import { ReviewKeyword } from './entity/ReviewKeyword'
 
 async function startApolloServer() {
   const app = express()
@@ -54,9 +48,26 @@ async function startApolloServer() {
   product.id = randomUUID()
   product.title = 'test product'
 
+  const reviewKeywords = []
+  let reviewKeyword = new ReviewKeyword()
+  reviewKeyword.id = randomUUID()
+  reviewKeyword.title = '사이즈업권장'
+  reviewKeywords.push(reviewKeyword)
+
+  reviewKeyword = new ReviewKeyword()
+  reviewKeyword.id = randomUUID()
+  reviewKeyword.title = '속비침'
+  reviewKeywords.push(reviewKeyword)
+
+  reviewKeyword = new ReviewKeyword()
+  reviewKeyword.id = randomUUID()
+  reviewKeyword.title = '쉽게줄어듬'
+  reviewKeywords.push(reviewKeyword)
+
   await Promise.all([
     typeormConnection.getRepository(Member).save(member),
     typeormConnection.getRepository(Product).save(product),
+    typeormConnection.getRepository(ReviewKeyword).save(reviewKeywords),
   ])
 
   app.use('/', cors<cors.CorsRequest>(), bodyParser.json())
@@ -85,5 +96,5 @@ export interface MyContext {
   // token?: String
   createUUID(options?: RandomUUIDOptions): string
   connection: DataSource
-  testDatas: { member: Member }
+  testDatas: { member: Member; product: Product }
 }

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { Member, Product, Review, ReviewLike, ReviewHate } from 'src/entity';
+import { MemberModel, ProductModel, ReviewModel, ReviewLikeModel, ReviewHateModel, ReviewKeywordModel } from '../graphql/models';
 import { MyContext } from '../index';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -72,11 +72,14 @@ export type MutationDeleteReviewLikeArgs = {
 export type Product = {
   __typename?: 'Product';
   id: Scalars['ID'];
-  title?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  members?: Maybe<Array<Member>>;
+  products?: Maybe<Array<Product>>;
+  reviewKeywords?: Maybe<Array<ReviewKeyword>>;
   reviews?: Maybe<Array<Review>>;
 };
 
@@ -197,16 +200,16 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Member: ResolverTypeWrapper<Member>;
+  Member: ResolverTypeWrapper<MemberModel>;
   Mutation: ResolverTypeWrapper<{}>;
-  Product: ResolverTypeWrapper<Product>;
+  Product: ResolverTypeWrapper<ProductModel>;
   Query: ResolverTypeWrapper<{}>;
-  Review: ResolverTypeWrapper<Review>;
+  Review: ResolverTypeWrapper<ReviewModel>;
   ReviewCreateInput: ReviewCreateInput;
-  ReviewHate: ResolverTypeWrapper<ReviewHate>;
+  ReviewHate: ResolverTypeWrapper<ReviewHateModel>;
   ReviewHateCreateInput: ReviewHateCreateInput;
-  ReviewKeyword: ResolverTypeWrapper<ReviewKeyword>;
-  ReviewLike: ResolverTypeWrapper<ReviewLike>;
+  ReviewKeyword: ResolverTypeWrapper<ReviewKeywordModel>;
+  ReviewLike: ResolverTypeWrapper<ReviewLikeModel>;
   ReviewLikeCreateInput: ReviewLikeCreateInput;
   String: ResolverTypeWrapper<Scalars['String']>;
 }>;
@@ -216,16 +219,16 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   ID: Scalars['ID'];
   Int: Scalars['Int'];
-  Member: Member;
+  Member: MemberModel;
   Mutation: {};
-  Product: Product;
+  Product: ProductModel;
   Query: {};
-  Review: Review;
+  Review: ReviewModel;
   ReviewCreateInput: ReviewCreateInput;
-  ReviewHate: ReviewHate;
+  ReviewHate: ReviewHateModel;
   ReviewHateCreateInput: ReviewHateCreateInput;
-  ReviewKeyword: ReviewKeyword;
-  ReviewLike: ReviewLike;
+  ReviewKeyword: ReviewKeywordModel;
+  ReviewLike: ReviewLikeModel;
   ReviewLikeCreateInput: ReviewLikeCreateInput;
   String: Scalars['String'];
 }>;
@@ -248,11 +251,14 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 
 export type ProductResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  members?: Resolver<Maybe<Array<ResolversTypes['Member']>>, ParentType, ContextType>;
+  products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>;
+  reviewKeywords?: Resolver<Maybe<Array<ResolversTypes['ReviewKeyword']>>, ParentType, ContextType>;
   reviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
 }>;
 

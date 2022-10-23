@@ -1,5 +1,8 @@
 type Query {
   reviews: [Review!]
+  products: [Product!]
+  members: [Member!]
+  reviewKeywords: [ReviewKeyword!]
 }
 
 type Mutation {
@@ -47,7 +50,7 @@ input ReviewCreateInput {
 
 type Product {
   id: ID!
-  title: String
+  title: String!
 }
 
 type ReviewKeyword {

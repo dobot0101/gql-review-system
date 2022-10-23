@@ -1,3 +1,4 @@
+import { Member } from '../entity/Member'
 import { Product } from '../entity/Product'
 import { Review } from '../entity/Review'
 import { ReviewHate } from '../entity/ReviewHate'
@@ -11,11 +12,21 @@ export const resolvers: Resolvers = {
     reviews: (parent, args, ctx, info) => {
       return ctx.connection.getRepository(Review).find()
     },
+    members: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(Member).find()
+    },
+    products: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(Product).find()
+    },
+    reviewKeywords: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(ReviewKeyword).find()
+    },
   },
   Mutation: {
     createReview: async (parent, args, ctx, info) => {
       const { input } = args
       const review = new Review()
+      review.id = ctx.createUUID()
       review.content = input.content
       review.member = ctx.testDatas.member
       review.product = ctx.testDatas.product
@@ -40,9 +51,7 @@ export const resolvers: Resolvers = {
         .getRepository(Review)
         .save(review)
 
-      return {
-        createdReview: savedReview,
-      }
+      return savedReview
     },
     deleteReview: async (parent, args, ctx, info) => {
       const { reviewId } = args
@@ -57,7 +66,15 @@ export const resolvers: Resolvers = {
       reviewLike.reviewId = reviewId
 
       await ctx.connection.getRepository(ReviewLike).save(reviewLike)
-      return reviewLike.id
+
+      const likedReview = await ctx.connection
+        .getRepository(Review)
+        .findOneOrFail({
+          where: {
+            id: reviewId,
+          },
+        })
+      return likedReview
     },
     deleteReviewLike: async (parent, args, ctx, info) => {
       const { reviewLikeId } = args
@@ -74,7 +91,15 @@ export const resolvers: Resolvers = {
         .getRepository(ReviewHate)
         .save(reviewHate)
 
-      return savedReviewHate.id
+      const hatedReview = await ctx.connection
+        .getRepository(Review)
+        .findOneOrFail({
+          where: {
+            id: reviewId,
+          },
+        })
+
+      return hatedReview
     },
     deleteReviewHate: async (parent, args, ctx, info) => {
       const { reviewHateId } = args
@@ -84,7 +109,11 @@ export const resolvers: Resolvers = {
   },
   Review: {
     product: (parent, args, ctx, info) => {
-      return ctx.connection.getRepository(Product).findOne(parent.id)
+      return ctx.connection.getRepository(Product).findOneOrFail({
+        where: {
+          id: parent.productId,
+        },
+      })
     },
     keywords: async (parent, args, ctx, info) => {
       const reviewReviewKeywords = await ctx.connection
@@ -92,38 +121,45 @@ export const resolvers: Resolvers = {
         .find({
           where: { reviewId: parent.id },
         })
-      const reviewKeywords = reviewReviewKeywords.map(
+      return reviewReviewKeywords.map(
         reviewReviewKeyword => reviewReviewKeyword.reviewKeyword
       )
-      return reviewKeywords
     },
     likeCount: async (parent, args, ctx, info) => {
       const agg = await ctx.connection
-        .createQueryBuilder(ReviewLike, ' rl')
+        .createQueryBuilder(ReviewLike, 'rl')
         .select(`rl.review_id, count(*) as review_like_count`)
         .groupBy(`rl.review_id`)
         .where(`rl.review_id = :reviewId`, { reviewId: parent.id })
         .getRawOne()
-      return agg.review_like_count
+      return agg ? agg.review_like_count : 0
     },
     hateCount: async (parent, args, ctx, info) => {
       const agg = await ctx.connection
-        .createQueryBuilder(ReviewHate, ' rl')
-        .select(`rl.review_id, count(*) as review_hate_count`)
-        .groupBy(`rl.review_id`)
-        .where(`rl.review_id = :reviewId`, { reviewId: parent.id })
+        .createQueryBuilder(ReviewHate, 'rh')
+        .select(`rh.review_id, count(*) as review_hate_count`)
+        .groupBy(`rh.review_id`)
+        .where(`rh.review_id = :reviewId`, { reviewId: parent.id })
         .getRawOne()
-      return agg.review_hate_count
+      return agg ? agg.review_hate_count : 0
     },
   },
   ReviewHate: {
-    review: (parent: ReviewLike) => {
-      throw new Error('unimplemented')
+    review: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(Review).findOneOrFail({
+        where: {
+          id: parent.reviewId,
+        },
+      })
     },
   },
   ReviewLike: {
-    review: (parent: ReviewLike) => {
-      throw new Error('unimplemented')
+    review: (parent, args, ctx, info) => {
+      return ctx.connection.getRepository(Review).findOneOrFail({
+        where: {
+          id: parent.reviewId,
+        },
+      })
     },
   },
 }

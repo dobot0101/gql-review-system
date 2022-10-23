@@ -12,8 +12,10 @@ generates:
       # More on this below!
       contextType: "../index#MyContext"
       mappers:
-        Member: 'src/entity#Member'
-        Product: 'src/entity#Product'
-        Review: 'src/entity#Review'
-        ReviewLike: 'src/entity#ReviewLike'
-        ReviewHate: 'src/entity#ReviewHate'
+        Member: '../graphql/models#MemberModel'
+        Product: '../graphql/models#ProductModel'
+        Review: '../graphql/models#ReviewModel'
+        ReviewLike: '../graphql/models#ReviewLikeModel'
+        ReviewHate: '../graphql/models#ReviewHateModel'
+        ReviewKeyword: '../graphql/models#ReviewKeywordModel'
+        # ReviewKeywordKeyword: '../graphql/models#ReviewKeywordKeywordModel'

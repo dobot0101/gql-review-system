@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm'
 import { Member } from './Member'
 import { Product } from './Product'
 import { ReviewHate } from './ReviewHate'
@@ -16,7 +8,7 @@ import { ReviewReviewKeyword } from './ReviewReviewKeyword'
 @Entity()
 export class Review {
   @PrimaryColumn('uuid') id!: string
-  @Column('text') content!: String
+  @Column('text') content!: string
 
   @ManyToOne(type => Member, member => member.reviews)
   member!: Member
@@ -30,7 +22,8 @@ export class Review {
 
   @OneToMany(
     type => ReviewReviewKeyword,
-    reviewReviewKeyword => reviewReviewKeyword.review
+    reviewReviewKeyword => reviewReviewKeyword.review,
+    { cascade: true }
   )
   reviewReviewKeywords!: ReviewReviewKeyword[]
 
